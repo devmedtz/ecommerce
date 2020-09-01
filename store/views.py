@@ -6,6 +6,30 @@ from django.http import JsonResponse
 
 from .utils import cookieCart, cartData, guestOrder
 
+#pesapal intergrations
+from django.conf import settings
+from django.views.generic import TemplateView
+from django_pesapal.views import PaymentRequestMixin
+
+class PaymentView(TemplateView, PaymentRequestMixin):
+   # Make payment view
+    template_name = "payments.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(PaymentView, self).get_context_data(**kwargs)
+
+        order_info = {
+            'first_name': 'medson',
+            'last_name': 'naftal',
+            'amount': 100,
+            'description': 'Payment for X',
+            'reference': 2,  # some object id
+            'email': 'user@example.com',
+        }
+
+        ctx["pesapal_url"] = self.get_payment_url(**order_info)
+        return ctx
+
 
 # Create your views here.
 def store(request):

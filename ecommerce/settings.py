@@ -41,9 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', #pesapal intrgration
+
     'crispy_forms',
+    'django_pesapal', #pesapal intrgration
 ]
 
+SITE_ID = 1  #pesapal intrgration
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,3 +141,31 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+#pesapal configurations
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
+    "loggers": {
+        "django_pesapal": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+    },
+}
+
+PESAPAL_DEMO = True
+PESAPAL_CONSUMER_KEY = "rqNZEcUtHrw1QSJgE1zSlFQbV78nVwwE"
+PESAPAL_CONSUMER_SECRET = "JmgzDR8pqlxxffpRo/cme08drr8="
+PESAPAL_IFRAME_LINK = 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4'
+PESAPAL_QUERY_STATUS_LINK = 'http://demo.pesapal.com/API/QueryPaymentDetails'
+PESAPAL_OAUTH_CALLBACK_URL = 'transaction_completed'
+PESAPAL_OAUTH_SIGNATURE_METHOD = 'SignatureMethod_HMAC_SHA1'
+PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = 'pesapal-payment'
+PESAPAL_TRANSACTION_FAILED_REDIRECT_URL = 'pesapal-payment'
+PESAPAL_REDIRECT_WITH_REFERENCE = True
+PESAPAL_TRANSACTION_MODEL = 'django_pesapal.Transaction'
+
+try:
+    from local_config import *
+except ImportError:
+    pass

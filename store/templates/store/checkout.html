@@ -43,7 +43,9 @@
 			<br>
 			<!-- paypal button -->
 			<div class="box-element hidden" id="payment-info">
-				<small>Paypal Options</small>
+				<a href="{% url 'pesapal-payment' %}">
+					<img style="padding-bottom: 20px; height: 100px; width: auto;" src="{% static 'images/mpesa.jpg' %}" alt="">
+				</a>
 				<!-- Set up a container element for the button -->
 				<div id="paypal-button-container"></div>
 				<!-- <button id="make-payment">Make Payment</button> -->
