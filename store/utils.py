@@ -9,7 +9,6 @@ def cookieCart(request):
     except:
         cart = {}
 
-    print('cart:', cart)
     items = []
     order = {'get_cart_total':0, 'get_cart_items':0,'shipping':False}
     cartItems = order['get_cart_items']
@@ -60,8 +59,6 @@ def cartData(request):
 
 
 def guestOrder(request, data):
-    print('user is not login')
-    print('COOKIES:', request.COOKIES)
 
     name = data['form']['name']
     email = data['form']['email']

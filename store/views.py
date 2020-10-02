@@ -18,13 +18,14 @@ class PaymentView(TemplateView, PaymentRequestMixin):
     def get_context_data(self, **kwargs):
         ctx = super(PaymentView, self).get_context_data(**kwargs)
 
+
         order_info = {
-            'first_name': 'medson',
-            'last_name': 'naftal',
-            'amount': 100,
-            'description': 'Payment for X',
-            'reference': 2,  # some object id
-            'email': 'user@example.com',
+            'first_name': 'first_name',
+            'last_name': 'last_name',
+            'amount': 10,
+            'description': 'items',
+            'reference': 3,  # some object id
+            'email': 'medsonnaftal@gmail.com',
         }
 
         ctx["pesapal_url"] = self.get_payment_url(**order_info)
