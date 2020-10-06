@@ -33,7 +33,9 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length=100, null=True)
+    cart_total = models.CharField(blank=True, null=True, max_length=19)
+    paid_status = models.BooleanField(default=False)
+    transaction_id = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return str(self.id)
@@ -83,4 +85,17 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return self.address
+
+
+class MakePayment(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    phone = models.CharField(max_length=12, verbose_name='Enter your M-PESA mobile number')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.phone
+
 

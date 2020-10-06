@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .import views
+from .payment import MakePaymentView
 
 urlpatterns = [
     path('', views.store, name='store'),
@@ -8,5 +9,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('update_item/', views.updateItem, name='update_item'),
     path('process_order/', views.processOrder, name='process_order'),
-    path('pesapal_payment/', views.PaymentView.as_view(), name='pesapal-payment'),
+    path('payment/<str:order_id>/', MakePaymentView, name='payment'),
+    path('validate_phone/', views.validate_phone, name='validate_phone'),
 ]

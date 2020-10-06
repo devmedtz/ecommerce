@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/technolo/ecommerce/
+    - /bin/cp -R ecommerce $DEPLOYPATH

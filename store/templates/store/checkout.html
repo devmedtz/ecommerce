@@ -36,19 +36,26 @@
 					</div>
 
 					<hr>
-					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
+					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Save & Continue">
 				</form>
 			</div>
 
 			<br>
-			<!-- paypal button -->
+
+			<!--Place Order Button -->
+			<div class="box-element hidden text-center" id="order-button">
+				<button class="btn btn-primary btn-ld" id="place-order">Place an order</button>
+			</div>
+
+			<!-- payment button -->
 			<div class="box-element hidden" id="payment-info">
-				<a href="{% url 'pesapal-payment' %}">
-					<img style="padding-bottom: 20px; height: 100px; width: auto;" src="{% static 'images/mpesa.jpg' %}" alt="">
-				</a>
-				<!-- Set up a container element for the button -->
-				<div id="paypal-button-container"></div>
-				<!-- <button id="make-payment">Make Payment</button> -->
+				<div class="text-center mb-3">
+					Pay Tshs. {{order.get_cart_total|floatformat:2}}/=
+					<h4 class="mb-3">Payment methods</h4>
+					<a href="{% url 'payment' order.id %}">
+						<img src="{% static 'images/mpesa.jpg' %}" style="height: 40px; width: auto;" alt="mpesa payment"><span> <strong style="color: black;">M-Pesa Online</strong></span>
+					</a>
+				</div>
 			</div>
 			
 		</div>
@@ -73,45 +80,10 @@
 		</div>
 	</div>
 
-<!-- Include the PayPal JavaScript SDK -->
-<script src="https://www.paypal.com/sdk/js?client-id=AQih9Ogm0iSXnB23W3dVtLFQuk_q6oSQmKPIPtf68vLS4UsB4NyL0vejiPbZ11uCs9HjCPySnXJxMTxw&currency=USD"></script>
-
-<script>
-	var total = '{{order.get_cart_total}}'
-	// Render the PayPal button into #paypal-button-container
-	paypal.Buttons({
-
-		style: {
-			color: 'blue',
-			shape: 'rect',
-		},
-
-		// Set up the transaction
-		createOrder: function(data, actions) {
-			return actions.order.create({
-				purchase_units: [{
-					amount: {
-						value: parseFloat(total).toFixed(2)
-					}
-				}]
-			});
-		},
-
-		// Finalize the transaction
-		onApprove: function(data, actions) {
-			return actions.order.capture().then(function(details) {
-				submitFormData()
-				// Show a success message to the buyer
-				// alert('Transaction completed by ' + details.payer.name.given_name + '!');
-			});
-		}
-
-
-	}).render('#paypal-button-container');
-</script>
 
 <script>
 	var shipping = '{{order.shipping}}'
+	var total = '{{order.get_cart_total}}'
 	
 
 	if (shipping == 'False'){
@@ -134,11 +106,21 @@
 		e.preventDefault()
 		console.log('Form submited')
 		document.getElementById('form-button').classList.add('hidden')
+		document.getElementById('order-button').classList.remove('hidden')
+	})
+
+	var button = document.getElementById('order-button')
+	button.addEventListener('click', function(r){
+		r.preventDefault()
+		document.getElementById('order-button').classList.add('hidden')
 		document.getElementById('payment-info').classList.remove('hidden')
 	})
 
+	document.getElementById('place-order').addEventListener('click', function(e){
+	    submitFormData()
+	})
+
 	function submitFormData(){
-		console.log('payment button clicked')
 
 		var userFormData = {
 			'name': null,
@@ -173,19 +155,13 @@
 			},
 			body:JSON.stringify({'form':userFormData, 'shipping': shippingInfo})
 		})
-		.then((response) => response.json())
-		.then((data) => {
-			console.log('Success:', data);
-			alert('Transaction completed');
+		// .then((response) => response.json())
+		// .then((data) => {
+		// 	cart = {}
+		// 	document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+		// })
 
-			cart = {}
-			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
-			
-			window.location.href = "{% url 'store' %}"
-		})
-
-		console.log('shipping info:', shippingInfo)
-		console.log('user Info:', userFormData)
 	}
 </script>
+
 {% endblock content %}

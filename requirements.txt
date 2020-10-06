@@ -1,7 +1,10 @@
 Django==3.0.7
+django-decouple==2.1
 certifi==2018.1.18
 chardet==3.0.4
 idna==2.6
 pycryptodome==3.9.8
 requests==2.18.4
 urllib3==1.22
+django-widget-tweaks==1.4.8
+psycopg2==2.8.6

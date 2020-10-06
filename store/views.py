@@ -1,18 +1,36 @@
 import json
 import datetime
-from django.shortcuts import render
-from .models import Product, Order, OrderItem, ShippingAddress
+import re
+from django.conf import settings
+from django.shortcuts import render, Http404, HttpResponse
 from django.http import JsonResponse
+from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
 
 from .utils import cookieCart, cartData, guestOrder
+from .models import Product, Order, OrderItem, ShippingAddress
 
-#pesapal intergrations
-from django.conf import settings
-from django.views.generic import TemplateView
 
-class PaymentView(TemplateView):
-   # Make payment view
-    template_name = "payments.html"
+@csrf_exempt
+def validate_phone(request):
+
+    if request.method == "GET":
+        raise Http404("URL doesn't exists")
+    else:   
+        response_data = {}
+
+        phone = request.POST["phone"]
+        
+        x = re.search("^2557[0-9]{8}$", phone)
+
+        if not x:
+            response_data["is_success"] = False
+        else:
+            response_data["is_success"] = True
+
+        return JsonResponse(response_data)
+
+
 
 
 # Create your views here.
@@ -79,7 +97,6 @@ def updateItem(request):
 
 
 def processOrder(request):
-    transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
 
     if request.user.is_authenticated:
@@ -90,11 +107,15 @@ def processOrder(request):
         customer, order = guestOrder(request, data)
 
     total = float(data['form']['total'])
-    order.transaction_id = transaction_id
 
     if total == order.get_cart_total:
         order.complete = True
+        order.cart_total = order.get_cart_total
     order.save()
+
+    order_id = order.id
+
+    print('order_id', order_id)
 
     if order.shipping == True:
         ShippingAddress.objects.create(

@@ -1,0 +1,96 @@
+{% extends 'store/main.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <p class="alert alert-warning" >
+                        {{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="card">
+                <div class="card-body text-center">
+                    <form id="paymentForm" action="." method="POST" autocomplete="off">
+                        {% csrf_token %}
+        
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+        
+                        {% for field in form.visible_fields %}
+                        <div class="form-group">
+                          <label class="mb-2" for="{{ field.id_for_label }}"><h5>{{ field.label }}</h5></label>
+                          {{form.phone|add_class:'form-control'|attr:'placeholder:Phone Number'|attr:'onkeyup:check_phone(this);return false;'}}
+                          {% for error in field.errors %}
+                            <span class="help-block">{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                      {% endfor %}
+        
+                        <div style="color:red;display:none;margin-top: 4px;"  id="phone_not">
+                            <span class="glyphicon glyphicon-remove"></span><small>
+                                Number is not correct! (2557XXXXXXXX)
+                            </small>
+                        </div>
+                        <div style="color: green;display: none;margin-top: 4px;" id="phone_ok">
+                            <span class="glyphicon glyphicon-ok"></span> Number is correct.
+                        </div>
+                    
+                        <div class="mb-3 mt-3 form-group">
+                            <button class="btn btn-danger btn-block btn-lg" id="make-payment">Pay Tshs. {{cart_price|floatformat:2}}/=</button>
+                            <p class="mb-2 mt-2 text-secondary">Your Order ID: {{order_id}}</p>
+                        </div>
+                        <div class="mb-2">
+                            <small>Please keep your phone in hand. Once you click "Pay" a request to comfirm your M-PESA PIN sent to your phone.</small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<!--Validate Phone Number on payment-->
+<script>
+	function check_phone(element) {
+		$("#phone_ok").hide();
+		$("#phone_not").hide();
+		phone = $(element).val();
+		if (phone == "") {
+			return;
+		}
+		$.ajax({
+			url : '/validate_phone/',
+			data : {
+				"csrfmiddlewaretoken" : $(element).siblings("input[name='csrfmiddlewaretoken']" ).val(),
+				"phone":phone
+			},
+			method: "POST",
+			dataType : "json",
+			success : function (returned_data) {			
+				if (returned_data.is_success) {
+					$("#phone_ok").show();
+				} else {
+					$("#phone_not").show();
+				}
+			}
+		});
+	}
+</script>
+
+<script>
+    var total = '{{order.get_cart_total}}'
+</script>
+
+{% endblock content %}
