@@ -102,7 +102,7 @@ def MakePaymentView(request, order_id):
             api_context.add_parameter('input_Amount', amount)
             api_context.add_parameter('input_Country', 'TZN')
             api_context.add_parameter('input_Currency', 'TZS')
-            api_context.add_parameter('input_CustomerMSISDN', '000000000001')
+            api_context.add_parameter('input_CustomerMSISDN', phone)
             api_context.add_parameter('input_ServiceProviderCode', '000000')
             api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689761')
             api_context.add_parameter('input_TransactionReference', 'T1234C')
