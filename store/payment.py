@@ -85,7 +85,7 @@ def MakePaymentView(request, order_id):
             api_context.address = 'openapi.m-pesa.com'
             api_context.port = 443
             api_context.path = '/sandbox/ipg/v2/vodacomTZN/c2bPayment/singleStage/'
-            api_context.add_header('Origin', '*') #127.0.0.1:8000 or Domain name
+            api_context.add_header('Origin', '68.66.216.21') #127.0.0.1:8000 or Domain name
 
             phone = request.POST.get('phone')
 
@@ -102,7 +102,7 @@ def MakePaymentView(request, order_id):
             api_context.add_parameter('input_Amount', amount)
             api_context.add_parameter('input_Country', 'TZN')
             api_context.add_parameter('input_Currency', 'TZS')
-            api_context.add_parameter('input_CustomerMSISDN', '255767176929')
+            api_context.add_parameter('input_CustomerMSISDN', '+255767176929')
             api_context.add_parameter('input_ServiceProviderCode', '000000')
             api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689761')
             api_context.add_parameter('input_TransactionReference', 'T1234C')
